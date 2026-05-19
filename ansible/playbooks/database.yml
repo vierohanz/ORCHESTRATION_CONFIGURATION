@@ -1,0 +1,29 @@
+---
+- name: Setup dan Konfigurasi Database Servers
+  hosts: dbservers
+  become: yes
+  roles:
+    - common
+  tasks:
+    - name: Install PostgreSQL Client / Utility
+      package:
+        name: postgresql-client
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Buat direktori backup database
+      file:
+        path: /var/backups/postgres
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Catat log inisialisasi database server
+      copy:
+        content: |
+          Database Server Initialized by Ansible
+          Timestamp: {{ ansible_date_time.iso8601 }}
+          Server: {{ ansible_hostname }}
+        dest: /var/backups/postgres/init.log
+        mode: '0644'

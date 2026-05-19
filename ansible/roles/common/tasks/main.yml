@@ -1,0 +1,27 @@
+---
+# Tasks dasar yang akan dijalankan di semua managed nodes
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Install paket utilitas esensial
+  package:
+    name:
+      - curl
+      - git
+      - htop
+      - ufw
+    state: present
+
+- name: Set timezone server
+  timezone:
+    name: "{{ timezone }}"
+
+- name: Konfigurasi custom MOTD (Message of the Day)
+  template:
+    src: motd.j2
+    dest: /etc/motd
+    mode: '0644'

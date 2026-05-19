@@ -1,0 +1,36 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # Menggunakan box resmi Kali Linux Rolling Edition
+  config.vm.box = "kalilinux/rolling"
+
+  # Control Node (Opsional jika ingin menjalankan Ansible dari dalam VM Kali Linux juga)
+  config.vm.define "control_node" do |control|
+    control.vm.hostname = "kali-control-node"
+    control.vm.network "private_network", ip: "192.168.56.10"
+    control.vm.synced_folder "../../ansible", "/ansible"
+    control.vm.provision "shell", inline: <<-SHELL
+      apt-get update
+      apt-get install -y ansible sshpass curl git vim
+    SHELL
+  end
+
+  # Host 1: Kali Web 1
+  config.vm.define "kali_web_1" do |web1|
+    web1.vm.hostname = "kali-web-1"
+    web1.vm.network "private_network", ip: "192.168.56.11"
+  end
+
+  # Host 2: Kali Web 2
+  config.vm.define "kali_web_2" do |web2|
+    web2.vm.hostname = "kali-web-2"
+    web2.vm.network "private_network", ip: "192.168.56.12"
+  end
+
+  # Host 3: Kali DB 1
+  config.vm.define "kali_db_1" do |db1|
+    db1.vm.hostname = "kali-db-1"
+    db1.vm.network "private_network", ip: "192.168.56.13"
+  end
+end

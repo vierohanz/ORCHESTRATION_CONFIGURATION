@@ -1,0 +1,47 @@
+---
+- name: Setup dan Konfigurasi Web Servers
+  hosts: webservers
+  become: yes
+  roles:
+    - common
+  tasks:
+    - name: Install Nginx Web Server
+      package:
+        name: nginx
+        state: present
+
+    - name: Pastikan service Nginx aktif dan berjalan
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Buat halaman landing page kustom (index.html)
+      copy:
+        content: |
+          <!DOCTYPE html>
+          <html lang="id">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Welcome to {{ app_name }}</title>
+              <style>
+                  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+                  .container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 600px; }
+                  h1 { color: #2c3e50; }
+                  .badge { background: #3498db; color: white; padding: 8px 15px; border-radius: 20px; font-size: 0.9em; display: inline-block; margin-bottom: 20px; }
+                  .footer { margin-top: 30px; font-size: 0.85em; color: #7f8c8d; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="badge">Environment: {{ environment_name }}</div>
+                  <h1>Server: {{ ansible_hostname }}</h1>
+                  <p>Halaman web ini di-deploy dan dikonfigurasi secara otomatis menggunakan <strong>Ansible Playbook</strong>.</p>
+                  <p>Web server Nginx berjalan dengan lancar pada node yang dikelola oleh control node.</p>
+                  <div class="footer">Project: {{ app_name }} | Contact: {{ admin_email }}</div>
+              </div>
+          </body>
+          </html>
+        dest: /var/www/html/index.html
+        mode: '0644'

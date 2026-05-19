@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  control-node:
+    build:
+      context: .
+      dockerfile: control-node.Dockerfile
+    container_name: control-node
+    volumes:
+      - ../../ansible:/ansible
+      - shared-keys:/shared-keys
+    networks:
+      - ansible-net
+
+  kali-web-1:
+    build:
+      context: .
+      dockerfile: managed-node.Dockerfile
+    container_name: kali-web-1
+    hostname: kali-web-1
+    volumes:
+      - shared-keys:/shared-keys
+    networks:
+      - ansible-net
+
+  kali-web-2:
+    build:
+      context: .
+      dockerfile: managed-node.Dockerfile
+    container_name: kali-web-2
+    hostname: kali-web-2
+    volumes:
+      - shared-keys:/shared-keys
+    networks:
+      - ansible-net
+
+  kali-db-1:
+    build:
+      context: .
+      dockerfile: managed-node.Dockerfile
+    container_name: kali-db-1
+    hostname: kali-db-1
+    volumes:
+      - shared-keys:/shared-keys
+    networks:
+      - ansible-net
+
+volumes:
+  shared-keys:
+
+networks:
+  ansible-net:
+    driver: bridge
