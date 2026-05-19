@@ -1,5 +1,4 @@
 ---
-# Global variables untuk seluruh managed nodes
 app_name: "Ansible Enterprise Lab"
 environment_name: "Development"
 admin_email: "admin@devops.local"

@@ -7,14 +7,29 @@
     cache_valid_time: 3600
   when: ansible_os_family == "Debian"
 
-- name: Install paket utilitas esensial
+- name: Install paket utilitas esensial dan Docker
   package:
     name:
       - curl
       - git
       - htop
       - ufw
+      - docker.io
+      - python3-docker
+      - python3-distutils
     state: present
+
+- name: Pastikan service Docker aktif dan berjalan
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Tambahkan user vboxuser ke dalam grup docker
+  user:
+    name: vboxuser
+    groups: docker
+    append: yes
 
 - name: Set timezone server
   timezone:
@@ -25,3 +40,11 @@
     src: motd.j2
     dest: /etc/motd
     mode: '0644'
+
+- name: Pastikan SSH port 22 diizinkan di firewall
+  ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+  notify: Reload Firewall
+

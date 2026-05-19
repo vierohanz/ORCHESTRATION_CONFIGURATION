@@ -2,7 +2,7 @@
 
 Project ini difokuskan **100% pada ranah Configuration Management menggunakan Ansible**. 
 
-Asumsinya, Anda sudah memiliki **3 Mesin Virtual (VM) Kali Linux** yang menyala di VirtualBox, dan Anda ingin menggunakan Ansible untuk mengonfigurasi sistem, menginstall paket aplikasi, serta men-deploy layanan web & database ke ketiga VM tersebut secara otomatis.
+Asumsinya, Anda sudah memiliki **2 Mesin Virtual (VM) Ubuntu** dan **1 Mesin Virtual (VM) Kali Linux** yang menyala di VirtualBox, dan Anda ingin menggunakan Ansible untuk mengonfigurasi sistem, menginstall paket aplikasi, serta men-deploy layanan web & database ke ketiga VM tersebut secara otomatis.
 
 ---
 
@@ -12,7 +12,7 @@ Asumsinya, Anda sudah memiliki **3 Mesin Virtual (VM) Kali Linux** yang menyala 
 c:\laragon\www\ANSIBLE\ansible\
 ├── ansible.cfg                   # Konfigurasi utama Ansible (lokasi inventory, privilege escalation)
 ├── inventory/                    # Definisi daftar target server (Managed Nodes)
-│   ├── hosts.ini                 # Daftar IP 3 VM Kali Linux & Kredensial SSH
+│   ├── hosts.ini                 # Daftar IP VM target (Ubuntu & Kali Linux) & Kredensial SSH
 │   └── group_vars/
 │       └── all.yml               # Variabel global (Nama Project, Nama Environment, Timezone)
 ├── playbooks/                    # Kumpulan skenario otomatisasi (Playbooks)
@@ -30,22 +30,20 @@ c:\laragon\www\ANSIBLE\ansible\
 
 ## 🛠️ Persiapan Sebelum Menjalankan Ansible
 
-Pastikan 3 VM Kali Linux Anda sudah menyala di VirtualBox dengan ketentuan berikut:
+Pastikan ketiga VM Anda sudah menyala di VirtualBox dengan ketentuan berikut:
 
 1. **IP Address VM** (sesuaikan di file `inventory/hosts.ini` jika berbeda):
-   - `kali-web-1`: `192.168.56.11`
-   - `kali-web-2`: `192.168.56.12`
-   - `kali-db-1` : `192.168.56.13`
-2. **Layanan SSH Aktif**: Pastikan layanan OpenSSH Server sudah berjalan di ketiga VM Anda. Di terminal masing-masing VM Kali Linux, Anda bisa memastikan dengan perintah:
+   - `ubuntu-web-1`: `192.168.56.11`
+   - `ubuntu-web-2`: `192.168.56.12`
+   - `kali-db-1`  : `192.168.56.13`
+2. **Layanan SSH Aktif**: Pastikan layanan OpenSSH Server sudah berjalan di ketiga VM Anda. Di terminal masing-masing VM, Anda bisa memastikan dengan perintah:
    ```bash
    sudo systemctl enable --now ssh
    ```
 3. **Kredensial SSH**: Di file `inventory/hosts.ini`, secara default telah diatur:
-   ```ini
-   ansible_user=kali
-   ansible_password=kali
-   ```
-   *(Ubah nilai tersebut jika username atau password di VM Kali Linux Anda berbeda).*
+   - Untuk Web Servers (Ubuntu): `ansible_user=ubuntu`, `ansible_password=ubuntu`
+   - Untuk Database Server (Kali): `ansible_user=kali`, `ansible_password=kali`
+   *(Ubah nilai tersebut jika username atau password di VM Anda berbeda).*
 
 ---
 
@@ -54,7 +52,7 @@ Pastikan 3 VM Kali Linux Anda sudah menyala di VirtualBox dengan ketentuan berik
 Buka terminal Anda (arahkan ke direktori `c:\laragon\www\ANSIBLE\ansible`), lalu jalankan perintah berikut:
 
 ### 1. Uji Koneksi (Ping Test)
-Pastikan Ansible dapat terhubung ke ketiga VM Kali Linux melalui SSH:
+Pastikan Ansible dapat terhubung ke ketiga VM melalui SSH:
 ```bash
 ansible all -m ping
 ```

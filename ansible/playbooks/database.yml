@@ -5,11 +5,26 @@
   roles:
     - common
   tasks:
-    - name: Install PostgreSQL Client / Utility
-      package:
-        name: postgresql-client
-        state: present
-      when: ansible_os_family == "Debian"
+    - name: Pastikan direktori data PostgreSQL ada
+      file:
+        path: /var/lib/postgresql/data
+        state: directory
+        mode: '0755'
+
+    - name: Jalankan Container PostgreSQL
+      docker_container:
+        name: dbserver
+        image: postgres:latest
+        env:
+          POSTGRES_USER: vboxuser
+          POSTGRES_PASSWORD: changeme
+          POSTGRES_DB: mydb
+        ports:
+          - "5432:5432"
+        volumes:
+          - "/var/lib/postgresql/data:/var/lib/postgresql/data"
+        state: started
+        restart_policy: always
 
     - name: Buat direktori backup database
       file:

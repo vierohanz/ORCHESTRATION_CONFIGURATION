@@ -1,0 +1,24 @@
+---
+- name: Setup dan Konfigurasi Cache Server (Redis)
+  hosts: cacheservers
+  become: yes
+  roles:
+    - common
+  tasks:
+    - name: Jalankan Container Redis
+      docker_container:
+        name: cacheserver
+        image: redis:latest
+        ports:
+          - "6379:6379"
+        state: started
+        restart_policy: always
+
+    - name: Catat log inisialisasi cache server
+      copy:
+        content: |
+          Redis Cache Server Initialized by Ansible
+          Timestamp: {{ ansible_date_time.iso8601 }}
+          Server: {{ ansible_hostname }}
+        dest: /var/log/redis_ansible_init.log
+        mode: '0644'
