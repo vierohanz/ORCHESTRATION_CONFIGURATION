@@ -1,5 +1,0 @@
----
-app_name: "Ansible Enterprise Lab"
-environment_name: "Development"
-admin_email: "admin@devops.local"
-timezone: "Asia/Jakarta"

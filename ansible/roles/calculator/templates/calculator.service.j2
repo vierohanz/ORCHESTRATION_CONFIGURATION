@@ -1,0 +1,16 @@
+[Unit]
+Description=Calculator Web Service
+After=network.target
+
+[Service]
+Type=simple
+# Jalankan dengan dedicated user, bukan root (prinsip least privilege)
+User=calculator
+Group=calculator
+WorkingDirectory=/opt/calculator
+ExecStart=/opt/calculator/venv/bin/python /opt/calculator/calculator.py
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

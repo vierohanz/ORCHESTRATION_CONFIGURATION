@@ -1,0 +1,5 @@
+---
+- name: Restart Hazelcast
+  systemd:
+    name: "{{ hazelcast_service_name }}"
+    state: restarted

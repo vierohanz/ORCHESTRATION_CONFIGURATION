@@ -1,0 +1,10 @@
+---
+app_name: "Ansible Enterprise Lab"
+environment_name: "Development"
+admin_email: "admin@devops.local"
+timezone: "Asia/Jakarta"
+
+hazelcast_host: "192.168.56.13"
+hazelcast_port: 5701
+
+postgres_db: "mydb"

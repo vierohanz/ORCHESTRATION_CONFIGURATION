@@ -1,0 +1,7 @@
+# Jangan commit vault yang belum dienkripsi
+# Enkripsi dulu dengan: ansible-vault encrypt ansible/inventory/group_vars/vault.yml
+ansible/inventory/group_vars/vault.yml
+
+# File sensitif lainnya
+*.retry
+.vault_pass

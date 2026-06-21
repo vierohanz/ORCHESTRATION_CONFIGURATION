@@ -1,0 +1,7 @@
+---
+- name: Setup dan Konfigurasi Kubernetes Cluster
+  hosts: k8s_nodes
+  become: yes
+  roles:
+    - common
+    - kubernetes

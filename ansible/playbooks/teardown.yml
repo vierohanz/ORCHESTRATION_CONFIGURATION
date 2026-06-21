@@ -1,0 +1,74 @@
+---
+- name: Teardown dan Pembersihan Semua Konfigurasi Ansible
+  hosts: managed_nodes
+  become: yes
+  tasks:
+    # 1. Hentikan dan Hapus Docker Containers
+    - name: Hentikan dan hapus semua Docker containers yang dibuat oleh Ansible
+      docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - webserver # dari Nginx
+        - dbserver # dari PostgreSQL
+        - cacheserver # dari Redis lama
+      ignore_errors: yes
+
+    # 2. Hentikan dan Nonaktifkan Systemd Services
+    - name: Hentikan dan nonaktifkan systemd services
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      loop:
+        - calculator
+        - hazelcast
+      ignore_errors: yes
+
+    - name: Hapus file service systemd
+      file:
+        path: "/etc/systemd/system/{{ item }}.service"
+        state: absent
+      loop:
+        - calculator
+        - hazelcast
+      notify: Reload systemd
+
+    - name: Hapus direktori aplikasi dan data yang dibuat oleh Ansible
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /var/lib/postgresql/data
+        - /var/backups/postgres
+        - /var/log/redis_ansible_init.log
+        - /opt/calculator
+        - /opt/hazelcast
+        - /opt/hazelcast-5.3.6
+        - /etc/motd
+
+    - name: Hapus user khusus yang dibuat Ansible
+      user:
+        name: calculator
+        state: absent
+        remove: yes
+
+
+    - name: Uninstall packages (Docker, Java, Python tools, Unzip)
+      apt:
+        name:
+          - docker.io
+          - python3-docker
+          - python3-distutils
+          - default-jre
+          - unzip
+          - python3-pip
+          - python3-venv
+        state: absent
+        autoremove: yes
+      ignore_errors: yes
+
+  handlers:
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes

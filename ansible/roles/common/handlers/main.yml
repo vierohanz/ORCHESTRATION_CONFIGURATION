@@ -1,5 +1,3 @@
----
-# Handlers untuk role common
 - name: Reload Firewall
   ufw:
     state: reloaded

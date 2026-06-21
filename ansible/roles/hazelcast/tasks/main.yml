@@ -1,0 +1,51 @@
+---
+# Java diinstall di sini karena Java adalah dependency langsung dari Hazelcast
+- name: Install Java JRE (dibutuhkan oleh Hazelcast)
+  apt:
+    name: default-jre
+    state: present
+
+- name: Pastikan unzip terinstal
+  apt:
+    name: unzip
+    state: present
+
+- name: Download Hazelcast
+  get_url:
+    url: "https://github.com/hazelcast/hazelcast/releases/download/v{{ hazelcast_version }}/hazelcast-{{ hazelcast_version }}.zip"
+    dest: "/tmp/hazelcast-{{ hazelcast_version }}.zip"
+
+- name: Ekstrak Hazelcast
+  unarchive:
+    src: "/tmp/hazelcast-{{ hazelcast_version }}.zip"
+    dest: "{{ hazelcast_install_dir }}/"
+    remote_src: yes
+    creates: "{{ hazelcast_install_dir }}/hazelcast-{{ hazelcast_version }}"
+
+- name: Buat symlink untuk Hazelcast
+  file:
+    src: "{{ hazelcast_install_dir }}/hazelcast-{{ hazelcast_version }}"
+    dest: "{{ hazelcast_install_dir }}/hazelcast"
+    state: link
+
+- name: Salin konfigurasi Hazelcast kustom
+  template:
+    src: hazelcast.xml.j2
+    dest: "{{ hazelcast_install_dir }}/hazelcast-{{ hazelcast_version }}/config/hazelcast.xml"
+  notify: Restart Hazelcast
+
+- name: Buat file systemd service untuk Hazelcast
+  template:
+    src: hazelcast.service.j2
+    dest: /etc/systemd/system/hazelcast.service
+  notify: Restart Hazelcast
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Start dan enable Hazelcast service
+  systemd:
+    name: "{{ hazelcast_service_name }}"
+    state: started
+    enabled: yes
