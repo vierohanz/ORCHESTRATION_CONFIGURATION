@@ -151,7 +151,7 @@ _Jika sukses, Anda akan melihat pesan `"ping": "pong"` dari `ubuntu-1`, `ubuntu-
 make deploy
 ```
 
-_Ansible akan otomatis memperbarui OS, menginstal Docker, menyiapkan direktori data, serta menyalakan kontainer Nginx, PostgreSQL, dan Redis._
+_Ansible akan otomatis memperbarui OS, menginstal Docker, menyiapkan direktori data, serta menyalakan kontainer Nginx, PostgreSQL, dan mengonfigurasi Java & Hazelcast._
 
 ---
 
@@ -162,10 +162,11 @@ Setelah proses `make deploy` selesai tanpa error:
 1. **Web Server (`ubuntu-1`)**:
    - **Akses Halaman**: Buka **`http://192.168.56.11`** di browser Windows untuk melihat halaman monitoring berkonsep **Dark Neo-Brutalisme** yang dinamis.
    - **Lokasi File**: `/var/www/html/index.html` (di-mount ke Nginx Docker Container).
+   - **Calculator Web Service**: Buka **`http://192.168.56.11:5000/calc?op=add&a=10&b=5`** untuk mencoba API kalkulator berbasis Python Flask yang menyimpan riwayat kalkulasinya ke Hazelcast.
 2. **Database Server (`ubuntu-2`)**:
    - **Lokasi Data**: `/var/lib/postgresql/data/` (Penyimpanan database Postgres).
    - **Lokasi Backup & Inisialisasi**: `/var/backups/postgres/init.log`.
 3. **Cache Server (`ubuntu-3`)**:
-   - **Lokasi Log Inisialisasi**: `/var/log/redis_ansible_init.log`.
+   - **Instalasi Java & Hazelcast**: Hazelcast diinstal secara native di `/opt/hazelcast` dan dikelola oleh `systemd`.
 
 _Developed with ❤️ for Advanced Infrastructure Automation._

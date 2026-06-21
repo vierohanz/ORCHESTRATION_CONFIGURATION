@@ -1,0 +1,64 @@
+---
+- name: Buat dedicated user untuk Calculator service
+  user:
+    name: calculator
+    system: yes
+    shell: /usr/sbin/nologin
+    home: /opt/calculator
+    create_home: no
+    comment: "Calculator Web Service User"
+
+- name: Install dependencies untuk Python
+  apt:
+    name:
+      - python3-pip
+      - python3-venv
+    state: present
+
+- name: Buat direktori aplikasi calculator
+  file:
+    path: /opt/calculator
+    state: directory
+    owner: calculator
+    group: calculator
+    mode: '0755'
+
+- name: Copy script aplikasi calculator
+  template:
+    src: calculator.py.j2
+    dest: /opt/calculator/calculator.py
+    owner: calculator
+    group: calculator
+    mode: '0755'
+  notify: Restart Calculator
+
+- name: Install Flask dan Hazelcast Client di Virtualenv
+  pip:
+    name:
+      - flask
+      - hazelcast-python-client
+    virtualenv: /opt/calculator/venv
+    virtualenv_command: python3 -m venv
+
+- name: Set kepemilikan virtualenv ke user calculator
+  file:
+    path: /opt/calculator/venv
+    owner: calculator
+    group: calculator
+    recurse: yes
+
+- name: Buat systemd service untuk Calculator
+  template:
+    src: calculator.service.j2
+    dest: /etc/systemd/system/calculator.service
+  notify: Restart Calculator
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Start dan enable calculator service
+  systemd:
+    name: calculator
+    state: started
+    enabled: yes

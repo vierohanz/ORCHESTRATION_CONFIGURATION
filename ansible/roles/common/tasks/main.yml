@@ -1,6 +1,3 @@
----
-# Tasks dasar yang akan dijalankan di semua managed nodes
-
 - name: Update apt cache
   apt:
     update_cache: yes
@@ -39,12 +36,11 @@
   template:
     src: motd.j2
     dest: /etc/motd
-    mode: '0644'
+    mode: "0644"
 
 - name: Pastikan SSH port 22 diizinkan di firewall
   ufw:
     rule: allow
-    port: '22'
+    port: "22"
     proto: tcp
   notify: Reload Firewall
-

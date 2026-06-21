@@ -1,0 +1,6 @@
+---
+# Versi dan lokasi Hazelcast — ubah di sini jika ingin upgrade
+hazelcast_version: "5.3.6"
+hazelcast_install_dir: "/opt"
+hazelcast_port: 5701
+hazelcast_service_name: hazelcast

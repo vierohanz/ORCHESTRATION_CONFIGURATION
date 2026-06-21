@@ -1,0 +1,4 @@
+vault_ansible_password: "changeme"
+vault_ansible_become_password: "changeme"
+vault_postgres_user: "vboxuser"
+vault_postgres_password: "changeme"
