@@ -3,7 +3,7 @@ output "webserver_ip" {
   value       = module.ubuntu_1.instance_public_ip
 }
 
-output "k8s_node_ip" {
+output "k3s_node_ip" {
   description = "IP Server 2 - Kubernetes Node"
   value       = module.ubuntu_2.instance_public_ip
 }
@@ -18,7 +18,7 @@ output "web_url" {
   value       = "http://${module.ubuntu_1.instance_public_ip}"
 }
 
-output "k8s_hello_world_url" {
+output "k3s_hello_world_url" {
   description = "URL Hello World Kubernetes"
   value       = "http://${module.ubuntu_2.instance_public_ip}:30080"
 }
