@@ -1,7 +1,0 @@
-[Server Configuration]
-IP_ADDRESS = 192.168.100.5
-ROLE = Database Server
-STATUS = Active
-
-# File ini di-generate secara otomatis oleh Terraform!
-# Ini mensimulasikan proses 'Provisioning' dari Infrastructure as Code.

@@ -1,51 +1,31 @@
 ---
-# Java diinstall di sini karena Java adalah dependency langsung dari Hazelcast
-- name: Install Java JRE (dibutuhkan oleh Hazelcast)
-  apt:
-    name: default-jre
-    state: present
+- name: Pastikan service native Hazelcast dimatikan (jika ada)
+  systemd:
+    name: "{{ hazelcast_service_name | default('hazelcast') }}"
+    state: stopped
+    enabled: no
+  ignore_errors: yes
 
-- name: Pastikan unzip terinstal
-  apt:
-    name: unzip
-    state: present
-
-- name: Download Hazelcast
-  get_url:
-    url: "https://github.com/hazelcast/hazelcast/releases/download/v{{ hazelcast_version }}/hazelcast-{{ hazelcast_version }}.zip"
-    dest: "/tmp/hazelcast-{{ hazelcast_version }}.zip"
-
-- name: Ekstrak Hazelcast
-  unarchive:
-    src: "/tmp/hazelcast-{{ hazelcast_version }}.zip"
-    dest: "{{ hazelcast_install_dir }}/"
-    remote_src: yes
-    creates: "{{ hazelcast_install_dir }}/hazelcast-{{ hazelcast_version }}"
-
-- name: Buat symlink untuk Hazelcast
+- name: Buat direktori konfigurasi Hazelcast
   file:
-    src: "{{ hazelcast_install_dir }}/hazelcast-{{ hazelcast_version }}"
-    dest: "{{ hazelcast_install_dir }}/hazelcast"
-    state: link
+    path: "{{ hazelcast_install_dir | default('/opt/hazelcast') }}/config"
+    state: directory
+    mode: '0755'
 
 - name: Salin konfigurasi Hazelcast kustom
   template:
     src: hazelcast.xml.j2
-    dest: "{{ hazelcast_install_dir }}/hazelcast-{{ hazelcast_version }}/config/hazelcast.xml"
-  notify: Restart Hazelcast
+    dest: "{{ hazelcast_install_dir | default('/opt/hazelcast') }}/config/hazelcast.xml"
 
-- name: Buat file systemd service untuk Hazelcast
-  template:
-    src: hazelcast.service.j2
-    dest: /etc/systemd/system/hazelcast.service
-  notify: Restart Hazelcast
-
-- name: Reload systemd daemon
-  systemd:
-    daemon_reload: yes
-
-- name: Start dan enable Hazelcast service
-  systemd:
-    name: "{{ hazelcast_service_name }}"
+- name: Jalankan Container Hazelcast
+  docker_container:
+    name: hazelcast-cache
+    image: hazelcast/hazelcast:5.3
+    ports:
+      - "5701:5701"
+    volumes:
+      - "{{ hazelcast_install_dir | default('/opt/hazelcast') }}/config/hazelcast.xml:/opt/hazelcast/config/hazelcast.xml:ro"
     state: started
-    enabled: yes
+    restart: yes
+    restart_policy: always
+
