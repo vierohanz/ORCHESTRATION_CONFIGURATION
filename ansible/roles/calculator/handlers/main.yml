@@ -1,5 +1,0 @@
----
-- name: Restart Calculator
-  systemd:
-    name: calculator
-    state: restarted

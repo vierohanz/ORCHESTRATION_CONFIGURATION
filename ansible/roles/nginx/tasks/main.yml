@@ -259,6 +259,11 @@
     dest: /var/www/html/index.html
     mode: "0644"
 
+- name: Buat Docker Network app-net
+  docker_network:
+    name: app-net
+    state: present
+
 - name: Jalankan Container Nginx
   docker_container:
     name: webserver
@@ -268,7 +273,9 @@
     volumes:
       - "/opt/nginx_conf/default.conf:/etc/nginx/conf.d/default.conf:ro"
       - "/var/www/html:/usr/share/nginx/html"
+    networks:
+      - name: app-net
     state: started
-    # force_restart karena konfigurasinya berubah
+    recreate: yes
     restart: yes
     restart_policy: always
