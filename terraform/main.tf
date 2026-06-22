@@ -13,7 +13,7 @@ module "security" {
 module "ubuntu_1" {
   source = "./modules/compute"
 
-  server_name        = "orchest_ubuntu_1"
+  server_name        = "ubuntu_1"
   instance_type      = var.instance_type
   storage_size       = var.storage_size
   key_name           = module.security.key_name
@@ -24,7 +24,7 @@ module "ubuntu_1" {
 module "ubuntu_2" {
   source = "./modules/compute"
 
-  server_name        = "orchest_ubuntu_2"
+  server_name        = "ubuntu_2"
   instance_type      = var.instance_type
   storage_size       = var.storage_size
   key_name           = module.security.key_name
@@ -35,7 +35,7 @@ module "ubuntu_2" {
 module "ubuntu_3" {
   source = "./modules/compute"
 
-  server_name        = "orchest_ubuntu_3"
+  server_name        = "ubuntu_3"
   instance_type      = var.instance_type
   storage_size       = var.storage_size
   key_name           = module.security.key_name
