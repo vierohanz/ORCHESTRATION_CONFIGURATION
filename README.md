@@ -122,13 +122,13 @@ make tf-destroy  # Matikan dan hapus semua server EC2
 
 ```bash
 # Cek container yang berjalan di Server 1
-ansible orchest_ubuntu_1 -i ansible/inventory/hosts.ini -b -m shell -a "docker ps"
+ansible ubuntu_1 -i ansible/inventory/hosts.ini -b -m shell -a "docker ps"
 
 # Cek status K3s di Server 2
-ansible orchest_ubuntu_2 -i ansible/inventory/hosts.ini -b -m shell -a "kubectl get nodes && kubectl get pods"
+ansible ubuntu_2 -i ansible/inventory/hosts.ini -b -m shell -a "kubectl get nodes && kubectl get pods"
 
 # Cek Hazelcast di Server 3
-ansible orchest_ubuntu_3 -i ansible/inventory/hosts.ini -b -m shell -a "docker ps"
+ansible ubuntu_3 -i ansible/inventory/hosts.ini -b -m shell -a "docker ps"
 ```
 
 Atau masuk langsung via SSH:
