@@ -9,7 +9,6 @@ deploy:
 teardown:
 	cd ansible && ANSIBLE_CONFIG=ansible.cfg ansible-playbook playbooks/teardown.yml
 
-
 tf-init:
 	cd terraform && ./terraform.exe init
 
